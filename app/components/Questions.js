@@ -1,110 +1,130 @@
 'use client';
 
-import { FormControl, Grid, InputLabel, MenuItem, Select, TextField } from "@mui/material"
+import { FormControl, Grid, Input, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material"
 
 export default function Questions() {
     const vragen = [
         {
             label: "Waar hebben we elkaar leren kennen?",
             type: "text",
-            name: "knowPlace"
+            name: "knowPlace",
+            answer: ["bierco"]
         },
         {
             label: "Wat waren Steven zijn eerste woorden aan Gwenny?",
             type: "text",
-            name: "firstWords"
+            name: "firstWords",
+            answer: ["kriek"]
         },
         {
             label: "Welk drankje dronk Gwenny op dit moment?",
             type: "text",
-            name: "drinkGwenny"
+            name: "drinkGwenny",
+            answer: ["kriek"]
         },
         {
             label: "Wat zijn de namen van onze kinderen?",
             type: "text",
-            name: "childrenNames"
+            name: "childrenNames",
+            answer: ["elise en ellen", "ellen en elise", "ellen & elise", "elise & ellen"]
         },
         {
             label: "Wat was onze eerste reis samen?",
             type: "text",
-            name: "firstTrip"
+            name: "firstTrip",
+            answer: ["kreta"]
         },
         {
             label: "Welke kleur hadden de bloemen van het bruidsboeket?",
             type: "text",
-            name: "flowerColor"
+            name: "flowerColor",
+            answer: ["oranje", "geel"]
         },
         {
             label: "Waar ging het trouwfeest door?",
             type: "text",
-            name: "weddingLocation"
+            name: "weddingLocation",
+            answer: ["ten stuyver"]
         },
         {
             label: "Waar gingen wij op huwelijksreis?",
             type: "text",
-            name: "honeymoonLocation"
+            name: "honeymoonLocation",
+            answer: [""]
         },
         {
             label: "Wat is Gwenny haar geboortedatum? (schrijf dit zoals: DD-MM-JJJJ)",
             type: "text",
-            name: "birthdateGwenny"
+            name: "birthdateGwenny",
+            answer: ["19-04-1977"]
         },
         {
             label: "In welk jaar waren we 10 jaar getrouwd",
             type: "text",
-            name: "whichYear"
+            name: "whichYear",
+            answer: ["2011"]
         },
         {
             label: "Wat was het thema van ons 10 jaar getrouwd feest",
             type: "text",
-            name: "themeParty"
+            name: "themeParty",
+            answer: ["trouwkleren", "hawai", "hawaï", "hawaii"]
         },
         {
             label: "Wanneer verjaart Steven?",
             type: "text",
-            name: "birhthdaySteven"
+            name: "birhthdaySteven",
+            answer: ["26 januari", "26-01", "26/01"]
         },
         {
             label: "Waar gaan we liefst op reis?",
             type: "text",
-            name: "favoriteTrip"
+            name: "favoriteTrip",
+            answer: ["*"]
         },
         {
             label: "Van wat heeft Steven nooit genoeg? (Waar Gewnny op zegt: 'Je hebt er al genoeg van!') (3 mogelijkheden)",
             type: "text",
-            name: "stevenEnough"
+            name: "stevenEnough",
+            answer: ["verlof", "congé", "vakantie", "conge", "parfum", "jassen"]
         },
         {
             label: "Hoe oud worden de kinderen in 2026?",
             type: "text",
-            name: "ageChildren"
+            name: "ageChildren",
+            answer: ["23 en 18", "18 en 23", "23 & 18", "18 & 23", "18 23", "23 18"]
         },
         {
             label: "Wat was onze openingsdans (titel en artiest)?",
             type: "text",
             name: "firstDance",
-            options: ["I Do It for You - Bryan Adams", "I Don’t Want to Miss a Thing - Aerosmith", "I Honestly Love You - René Froger"]
+            options: ["I Do It for You - Bryan Adams", "I Don’t Want to Miss a Thing - Aerosmith", "I Honestly Love You - René Froger"],
+            answer: ["I Honestly Love You - René Froger"]
         },
         {
             label: "In welk jaar hebben wij elkaar voor de eerste keer ontmoet?",
             type: "text",
-            name: "firstMeetYear"
+            name: "firstMeetYear",
+            answer: ["1997"]
         },
         {
             label: "Wie heeft er de eerste kus gegeven?",
             type: "text",
             name: "firstKiss",
-            options: ["Steven", "Gwenny", "Ze weten het zelf niet meer"]
+            options: ["Steven", "Gwenny", "Ze weten het zelf niet meer"],
+            answer: ["Gwenny"]
         },
         {
             label: "Wat is ons huisnummer?",
             type: "text",
-            name: "houseNumber"
+            name: "houseNumber",
+            answer: ["18"]
         },
         {
             label: "Als je hun relatie in 1 woord zou moeten omschrijven, welk woord zou dat zijn?",
             type: "text",
-            name: "oneWord"
+            name: "oneWord",
+            answer: ["*"]
         }
     ];
 
@@ -113,25 +133,24 @@ export default function Questions() {
             {vragen.map((vraag, index) => {
                 return (
                     (vraag.options) ? (
-                        <FormControl fullWidth key={index} sx={{my: 2}}>
-                            <InputLabel>{vraag.label}</InputLabel>
+                        <FormControl fullWidth key={index} sx={{ my: 2 }}>
+                            <Typography variant="body2" sx={{ mb: 1 }}>
+                                {vraag.label}
+                            </Typography>
                             <Select label={vraag.label} variant="standard" name={vraag.name} fullWidth key={index}>
                                 {vraag.options.map((option, idx) => (
-                                    <MenuItem key={idx} value={option} onChange={() => {console.log('hello world')}}>{option}</MenuItem>
+                                    <MenuItem key={idx} value={option} onChange={() => { console.log('hello world') }}>{option}</MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
                     )
                         :
-                        <TextField
-                            key={index}
-                            label={vraag.label}
-                            type={vraag.type}
-                            name={vraag.name}
-                            variant="standard"
-                            fullWidth
-                            margin="normal"
-                        />
+                        <FormControl variant="standard" key={index}>
+                            <Typography variant="body2" sx={{ mb: 1 }}>
+                                {vraag.label}
+                            </Typography>
+                            <Input id="component-simple" />
+                        </FormControl>
                 );
             })}
         </Grid>
