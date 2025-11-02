@@ -4,8 +4,14 @@ import { alpha, Button, Divider, FormControl, Grid, Input, Paper, TextField, Typ
 import Questions from "./Questions";
 
 export default function Form() {
+    function handleSubmit(event) {
+        event.preventDefault(); 
+        // Handle form submission logic here
+    }
+
+
     return (
-        <Paper sx={{ width: { xs: '85vw', md: '50vw' }, padding: 4, mt: 10, borderRadius: 5, overflowY: 'auto', backgroundColor: alpha('#FFFFFF', 0.8) }}>
+        <Paper sx={{ width: { xs: '85vw', md: '50vw' }, padding: 4, my: 10, borderRadius: 5, overflowY: 'auto', backgroundColor: alpha('#FFFFFF', 0.8) }}>
             <Grid container direction="column" spacing={2}>
                 <Grid container direction="column" spacing={2}>
                     <Typography variant="h4">
