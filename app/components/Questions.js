@@ -59,13 +59,13 @@ export default function Questions() {
             answer: ["19-04-1977"]
         },
         {
-            label: "In welk jaar waren we 10 jaar getrouwd",
+            label: "In welk jaar waren we 10 jaar getrouwd?",
             type: "text",
             name: "whichYear",
             answer: ["2011"]
         },
         {
-            label: "Wat was het thema van ons 10 jaar getrouwd feest",
+            label: "Wat was het thema van ons 10 jaar getrouwd feest?",
             type: "text",
             name: "themeParty",
             answer: ["trouwkleren", "hawai", "hawaï", "hawaii"]
