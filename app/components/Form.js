@@ -1,24 +1,12 @@
 'use client';
 
-import { Grid, Paper, TextField, Typography } from "@mui/material"
+import { Button, Divider, Grid, Paper, TextField, Typography } from "@mui/material"
+import Questions from "./Questions";
 
 export default function Form() {
-    const vragen = [
-        {
-            label: "Waar hebben we elkaar leren kennen?",
-            type: "text",
-            name: "knowPlace"
-        },
-        {
-            label: "Waar ging onze eerste date door?",
-            type: "text",
-            name: "firstDate"
-        },
-    ];
-
     return (
-        <Paper sx={{ width: '50vw', padding: 4, mt: 10, borderRadius: 5 }}>
-            <Grid container direction="column">
+        <Paper sx={{ width: '50vw', padding: 4, mt: 10, borderRadius: 5, overflowY: 'auto' }}>
+            <Grid container direction="column" spacing={2}>
                 <Grid container direction="column" spacing={2}>
                     <Typography variant="h4">
                         Party Time!
@@ -31,20 +19,15 @@ export default function Form() {
                         Tot Dan!<br />Gwenny en Steven
                     </Typography>
                 </Grid>
+                <Divider sx={{ mt: 5, mb: 4 }} />
                 <TextField label="Volledige naam" variant="standard" name="fullName" fullWidth margin="normal" />
-                {vragen.map((vraag, index) => {
-                    return (
-                        <TextField
-                            key={index}
-                            label={vraag.label}
-                            type={vraag.type}
-                            name={vraag.name}
-                            variant="standard"
-                            fullWidth
-                            margin="normal"
-                        />
-                    );
-                })}
+                {/* Here would be the Questions component */}
+                <Questions />
+                <Grid container justifyContent="center">
+                    <Button variant="contained" color="primary" sx={{ mt: 3, textTransform: 'capitalize', borderRadius: 5, backgroundColor: '#FFB7CE' }}>
+                        Bekijk mijn resultaat
+                    </Button>
+                </Grid>
             </Grid>
         </Paper>
     );
