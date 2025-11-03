@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <div>
       <Grid container justifyContent="center" alignItems="start" sx={{
-        backgroundImage: 'url(/love.jpg)',
+        backgroundImage: 'url(/collage.png)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',

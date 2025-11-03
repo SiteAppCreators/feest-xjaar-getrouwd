@@ -261,7 +261,7 @@ export default function Questions() {
                 </Typography>
             </Grid>
             <Grid container justifyContent="center">
-                <Button variant="contained" onClick={() => handleSubmit()} loading={loading} color="primary" sx={{ textTransform: 'capitalize', borderRadius: 5, backgroundColor: '#b56647' }} disabled={subDisabled}>
+                <Button variant="contained" onClick={() => handleSubmit()} loading={loading} color="primary" sx={{ textTransform: 'capitalize', borderRadius: 5, backgroundColor: '#e6ebe7', color: '#000000' }} disabled={subDisabled}>
                     Bekijk mijn resultaat
                 </Button>
             </Grid>

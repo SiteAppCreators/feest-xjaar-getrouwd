@@ -5,11 +5,11 @@ import Questions from "./Questions";
 
 export default function Form() {
     return (
-        <Paper sx={{ width: { xs: '85vw', md: '50vw' }, padding: 4, my: 10, borderRadius: 5, overflowY: 'auto', backgroundColor: alpha('#FFFFFF', 0.8) }}>
+        <Paper sx={{ width: { xs: '85vw', md: '50vw' }, padding: 4, my: 10, borderRadius: 5, overflowY: 'auto', backgroundColor: alpha('#FFFFFF', 0.9) }}>
             <Grid container direction="column" spacing={2}>
                 <Grid container direction="column" spacing={2}>
                     <Typography variant="h4">
-                        Party Time!
+                        Party Time! 🎉 
                     </Typography>
                     <Typography variant="body1">
                         Hoera je bent uitgenodigd voor ons feest! Maar natuurlijk is nu de vraag:<br />
