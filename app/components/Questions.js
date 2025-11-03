@@ -145,6 +145,7 @@ export default function Questions() {
 
     //disable the submit button
     const [subDisabled, setSubDisabled] = useState(true)
+    const [loading, setLoading] = useState(false)
 
     function handleChange(e) {
         const { name, value } = e.target;
@@ -171,6 +172,7 @@ export default function Questions() {
     }, [data, fullName])
 
     async function handleSubmit() {
+        setLoading(true)
         const score = checkAnswers();
         const response = await fetch('/api/supabase', {
             method: 'POST',
@@ -188,6 +190,7 @@ export default function Questions() {
             const resp = await response.json()
             alert(resp.message);
         }
+        setLoading(false)
     }
 
     function checkAnswers() {
@@ -258,7 +261,7 @@ export default function Questions() {
                 </Typography>
             </Grid>
             <Grid container justifyContent="center">
-                <Button variant="contained" onClick={() => handleSubmit()} color="primary" sx={{ textTransform: 'capitalize', borderRadius: 5, backgroundColor: '#b56647' }} disabled={subDisabled}>
+                <Button variant="contained" onClick={() => handleSubmit()} loading={loading} color="primary" sx={{ textTransform: 'capitalize', borderRadius: 5, backgroundColor: '#b56647' }} disabled={subDisabled}>
                     Bekijk mijn resultaat
                 </Button>
             </Grid>
