@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Feest x jaar getrouwd",
+  title: "25 jaar getrouwd! 🎉",
   description: "U bent uitgenodigd op ons feest! Probeer onze vragen op te lossen en wie weet ben jij de eerste die de locatie van ons feest ontdekt!",
 };
 
