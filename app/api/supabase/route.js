@@ -4,7 +4,7 @@ import { supabaseAdmin } from "../../lib/supabaseClient";
 export async function POST(req) {
     try {
         const body = await req.json();
-        const { fullName, data } = body;
+        const { fullName, data, totalScore } = body;
 
         if (fullName) {
             //add the lowercase fullname
@@ -16,7 +16,8 @@ export async function POST(req) {
             } else {
                 const fullPayload = {
                     'fullName': lowerFullName,
-                    ...data
+                    ...data,
+                    'totalScore': totalScore
                 };
                 const insertedData = await supabaseAdmin.from('names').insert([fullPayload]).select();
                 return NextResponse.json({ message: "Data received successfully" }, { status: 200 });

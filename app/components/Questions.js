@@ -92,7 +92,7 @@ const vragen = [
         label: "Hoe oud worden de kinderen in 2026?",
         type: "text",
         name: "ageChildren",
-        answer: ["23 en 18", "18 en 23", "23 & 18", "18 & 23", "18 23", "23 18"]
+        answer: ["23 en 18", "18 en 23", "23 & 18", "18 & 23", "18 23", "23 18", "18 en 23 jaar", "18 jaar en 23 jaar", "18 & 23 jaar", "18 jaar & 23 jaar", "23 en 18 jaar", "23 jaar en 18 jaar", "23 & 18 jaar", "23 jaar & 18 jaar"]
     },
     {
         label: "Wat was onze openingsdans (titel en artiest)?",
@@ -171,16 +171,19 @@ export default function Questions() {
     }, [data, fullName])
 
     async function handleSubmit() {
+        const score = checkAnswers();
         const response = await fetch('/api/supabase', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 fullName: fullName,
-                data: data
+                data: data,
+                totalScore: score
             })
         })
         if (response.status === 200) {
-            checkAnswers();
+            setTotalScore(score);
+            setShowScore(true);
         } else if (response) {
             const resp = await response.json()
             alert(resp.message);
@@ -192,14 +195,13 @@ export default function Questions() {
         vragen.map((vraag) => {
             if (vraag.answer.includes("*") && data[vraag.name] && data[vraag.name].trim() !== "") {
                 score += 1;
-            } else if (data[vraag.name] && vraag.answer.includes(data[vraag.name].trim().toLowerCase())) {
+            } else if (data[vraag.name] && vraag.answer.includes(data[vraag.name].replace('.', '').trim().toLowerCase())) {
                 score += 1;
             } else if (data[vraag.name] && vraag.options && vraag.answer.includes(data[vraag.name])) {
                 score += 1;
             }
         })
-        setTotalScore(score);
-        setShowScore(true);
+        return score
     }
 
     return (
