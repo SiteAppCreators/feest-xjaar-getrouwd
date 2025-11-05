@@ -14,7 +14,7 @@ export default function Form() {
                     <Typography variant="body1">
                         Hoera je bent uitgenodigd voor ons feest! Maar natuurlijk is nu de vraag:<br />
                         <b>Waar gaat deze door?</b><br /><br />
-                        Los volgende vragen op. Behaal jij 80% op onze vragen, dan krijg je van ons de locatie te zien.<br />
+                        Los volgende vragen op. Behaal jij 75% op onze vragen, dan krijg je van ons de locatie te zien.<br />
                         Maar niet getreurd! Vind je ze niet, kijk dan <b>2 maanden voor het feest</b> terug naar deze pagina. De locatie wordt dan gewoon op deze pagina mooi getoond.<br /><br />
                         Tot Dan!<br />Gwenny en Steven
                     </Typography>
