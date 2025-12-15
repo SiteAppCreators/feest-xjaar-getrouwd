@@ -1,7 +1,7 @@
 'use client';
 
-import { Button, FormControl, Grid, Input, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material"
-import { useEffect, useState } from "react";
+import { alpha, Button, Divider, FormControl, Grid, Input, InputLabel, MenuItem, Paper, Select, TextField, Typography } from "@mui/material"
+import React, { useEffect, useState } from "react";
 
 const vragen = [
     {
@@ -38,7 +38,7 @@ const vragen = [
         label: "Welke kleur hadden de bloemen van het bruidsboeket?",
         type: "text",
         name: "flowerColor",
-        answer: ["oranje", "geel"]
+        answer: ["oranje"]
     },
     {
         label: "Waar ging het trouwfeest door?",
@@ -50,7 +50,7 @@ const vragen = [
         label: "Waar gingen wij op huwelijksreis?",
         type: "text",
         name: "honeymoonLocation",
-        answer: [""]
+        answer: ["mallorca"]
     },
     {
         label: "Wat is Gwenny haar geboortedatum? (schrijf dit zoals: DD-MM-JJJJ)",
@@ -86,7 +86,7 @@ const vragen = [
         label: "Van wat heeft Steven nooit genoeg? (Waar Gwenny op zegt: 'Je hebt er al genoeg van!') (3 mogelijkheden)",
         type: "text",
         name: "stevenEnough",
-        answer: ["verlof", "congé", "vakantie", "conge", "parfum", "jassen"]
+        answer: ["verlof", "congé", "vakantie", "conge", "parfum", "jassen", "vestjes", "vesten"]
     },
     {
         label: "Hoe oud worden de kinderen in 2026?",
@@ -207,64 +207,97 @@ export default function Questions() {
         return score
     }
 
+    function chunkArray(array, chunkSize) {
+        const chunks = []
+        for (let i = 0; i < array.length; i += chunkSize) {
+            chunks.push(array.slice(i, i + chunkSize))
+        }
+        return chunks
+    }
+
+    const questionGroups = chunkArray(vragen, 5);
+
     return (
-        <Grid container direction="column" spacing={5}>
-            <FormControl variant="standard">
-                <Typography variant="body2" sx={{ mb: 1 }} color="#606060">
-                    Volledige Naam
-                </Typography>
-                <Input id="component-simple"
-                    name="fullName"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                />
-            </FormControl>
-            {vragen.map((vraag, index) => {
+        <Grid container direction="column" spacing={10} alignItems={"center"}>
+            <Paper sx={{ width: { xs: '85vw', md: '50vw' }, padding: 4, mt: 10, borderRadius: 5, overflowY: 'auto', backgroundColor:  alpha('#FFFFFF', 0.95) }}>
+                <FormControl variant="standard" fullWidth>
+                    <Typography variant="body2" sx={{ mb: 1 }} color="#606060">
+                        Volledige Naam
+                    </Typography>
+                    <Input id="component-simple"
+                        name="fullName"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                    />
+                </FormControl>
+            </Paper>
+            {questionGroups.map((group, groupIndex) => {
                 return (
-                    (vraag.options) ? (
-                        <FormControl fullWidth key={index} sx={{ my: 2 }}>
-                            <Typography variant="body2" sx={{ mb: 1 }} color="#606060">
-                                {vraag.label}
-                            </Typography>
-                            <Select label={vraag.label} variant="standard" name={vraag.name} defaultValue={""} onChange={(e) => handleChange(e)} fullWidth key={index}>
-                                {vraag.options.map((option, idx) => (
-                                    <MenuItem key={idx} value={option}>{option}</MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    )
-                        :
-                        <FormControl variant="standard" key={index}>
-                            <Typography variant="body2" sx={{ mb: 1 }} color="#606060">
-                                {vraag.label}
-                            </Typography>
-                            <Input id="component-simple" name={vraag.name} value={data[vraag.name] || ""} onChange={(e) => handleChange(e)} />
-                        </FormControl>
-                );
+                    <Paper
+                        key={groupIndex}
+                        sx={{
+                            width: { xs: '85vw', md: '50vw' },
+                            p: 4,
+                            mb: 20,
+                            borderRadius: 5,
+                            backgroundColor: alpha('#FFFFFF', 0.95),
+                        }}
+                    >
+                        <Grid container direction={'column'} spacing={5}>
+                            {group.map((vraag, index) => {
+                                return (
+                                    (vraag.options) ? (
+                                        <FormControl fullWidth key={index} sx={{ my: 2 }}>
+                                            <Typography variant="body2" sx={{ mb: 1 }} color="#606060">
+                                                {vraag.label}
+                                            </Typography>
+                                            <Select label={vraag.label} variant="standard" name={vraag.name} defaultValue={""} onChange={(e) => handleChange(e)} fullWidth key={index}>
+                                                {vraag.options.map((option, idx) => (
+                                                    <MenuItem key={idx} value={option}>{option}</MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                    )
+                                        :
+                                        <FormControl fullWidth variant="standard" key={index}>
+                                            <Typography variant="body2" sx={{ mb: 1 }} color="#606060">
+                                                {vraag.label}
+                                            </Typography>
+                                            <Input id="component-simple" name={vraag.name} value={data[vraag.name] || ""} onChange={(e) => handleChange(e)} />
+                                        </FormControl>
+                                )
+                            })}
+                        </Grid>
+                        {groupIndex === questionGroups.length - 1 && (
+                            <Grid container direction={'column'}>
+                                <Grid display={showScore === true ? 'block' : 'none'}>
+                                    <Typography variant="h6" sx={{ textAlign: 'center', mt: 3 }}>
+                                        Jouw score is: <br />{totalScore} / {vragen.length}
+                                    </Typography>
+                                    <Typography variant="body1" sx={{ textAlign: 'center', mt: 3 }}>
+                                        {totalScore >= 15 ? (
+                                            <>
+                                                Gefeliciteerd! Je hebt meer dan 75% behaald.<br />
+                                                De coördinaten van het feest zijn:<br />
+                                                <b>51°11'10.0"N 3°00'23.5"E</b>
+                                            </>
+                                        ) : <>
+                                            Helaas, je hebt niet genoeg punten behaald om de locatie te onthullen.<br />
+                                            Kijk <b>2 maanden voor het feest</b> terug op deze pagina voor de locatie.
+                                        </>
+                                        }
+                                    </Typography>
+                                </Grid>
+                                <Grid container justifyContent="center" mt={5}>
+                                    <Button variant="contained" onClick={() => handleSubmit()} loading={loading} color="primary" sx={{ textTransform: 'capitalize', borderRadius: 5, backgroundColor: '#e6ebe7', color: '#000000' }} disabled={subDisabled}>
+                                        Bekijk mijn resultaat
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        )}
+                    </Paper>
+                )
             })}
-            <Grid display={showScore === true ? 'block' : 'none'}>
-                <Typography variant="h6" sx={{ textAlign: 'center', mt: 3 }}>
-                    Jouw score is: <br />{totalScore} / {vragen.length}
-                </Typography>
-                <Typography variant="body1" sx={{ textAlign: 'center', mt: 3 }}>
-                    {totalScore >= 15 ? (
-                        <>
-                            Gefeliciteerd! Je hebt meer dan 75% behaald.<br />
-                            De coördinaten van het feest zijn:<br />
-                            <b>51°11'10.0"N 3°00'23.5"E</b>
-                        </>
-                    ) : <>
-                        Helaas, je hebt niet genoeg punten behaald om de locatie te onthullen.<br />
-                        Kijk <b>2 maanden voor het feest</b> terug op deze pagina voor de locatie.
-                    </>
-                    }
-                </Typography>
-            </Grid>
-            <Grid container justifyContent="center">
-                <Button variant="contained" onClick={() => handleSubmit()} loading={loading} color="primary" sx={{ textTransform: 'capitalize', borderRadius: 5, backgroundColor: '#e6ebe7', color: '#000000' }} disabled={subDisabled}>
-                    Bekijk mijn resultaat
-                </Button>
-            </Grid>
         </Grid>
     );
 }

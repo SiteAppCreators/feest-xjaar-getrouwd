@@ -5,13 +5,19 @@ import Form from "./components/Form";
 
 export default function Home() {
   return (
-    <div>
+    <div style={{backgroundImage: 'url(/collage.png)'}}>
       <Grid container justifyContent="center" alignItems="start" sx={{
         backgroundImage: 'url(/collage.png)',
-        backgroundSize: 'cover',
         backgroundPosition: 'center',
-        backgroundAttachment: 'fixed',
-        overflow: 'hidden'
+        backgroundAttachment: {
+          xs: 'scroll', // mobile
+          md: 'fixed', // desktop
+        },
+        backgroundSize: {
+          xs: '100%', // mobile – zoom in slightly
+          md: 'cover', // desktop
+        },
+        overflow: 'hidden',
       }}>
         <Form />
       </Grid>
