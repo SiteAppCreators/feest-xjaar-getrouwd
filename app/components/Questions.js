@@ -209,7 +209,8 @@ export default function Questions() {
 
     //dd: voor de getallen
     function extractNumbers(value) {
-        return value.match(/\d+/g)?.map(Number) || [];
+        if (!value) return [];
+        return String(value).match(/\d+/g)?.map(Number) || [];
     }
 
     function normalize(value) {
