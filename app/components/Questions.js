@@ -1,7 +1,20 @@
 'use client';
 
-import { alpha, Button, Divider, FormControl, Grid, Input, InputLabel, MenuItem, Paper, Select, TextField, Typography } from "@mui/material"
-import React, { useEffect, useState } from "react";
+import {
+    alpha,
+    Button,
+    Divider,
+    FormControl,
+    Grid,
+    Input,
+    InputLabel,
+    MenuItem,
+    Paper,
+    Select,
+    TextField,
+    Typography
+} from "@mui/material"
+import React, {useEffect, useState} from "react";
 
 const vragen = [
     {
@@ -24,9 +37,9 @@ const vragen = [
     },
     {
         label: "Wat zijn de namen van onze kinderen?",
-        type: "text",
+        type: "wordset",
         name: "childrenNames",
-        answer: ["elise en ellen", "ellen en elise", "ellen & elise", "elise & ellen"]
+        answer: ["elise", "ellen"]
     },
     {
         label: "Wat was onze eerste reis samen?",
@@ -90,9 +103,9 @@ const vragen = [
     },
     {
         label: "Hoe oud worden de kinderen in 2026?",
-        type: "text",
+        type: "numberset",
         name: "ageChildren",
-        answer: ["23 en 18", "18 en 23", "23 & 18", "18 & 23", "18 23", "23 18", "18 en 23 jaar", "18 jaar en 23 jaar", "18 & 23 jaar", "18 jaar & 23 jaar", "23 en 18 jaar", "23 jaar en 18 jaar", "23 & 18 jaar", "23 jaar & 18 jaar"]
+        answer: [18, 23]
     },
     {
         label: "Wat was onze openingsdans (titel en artiest)?",
@@ -148,7 +161,7 @@ export default function Questions() {
     const [loading, setLoading] = useState(false)
 
     function handleChange(e) {
-        const { name, value } = e.target;
+        const {name, value} = e.target;
         setData((prev) => ({
             ...prev,
             [name]: value,
@@ -165,6 +178,7 @@ export default function Questions() {
     useEffect(() => {
         const hasEmpty = Object.values(data).some(value => value === '');
         if ((!hasEmpty && fullName !== '') && subDisabled === true) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setSubDisabled(false)
         } else if ((hasEmpty || fullName === '') && subDisabled === false) {
             setSubDisabled(true)
@@ -176,7 +190,7 @@ export default function Questions() {
         const score = checkAnswers();
         const response = await fetch('/api/supabase', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
                 fullName: fullName,
                 data: data,
@@ -193,19 +207,86 @@ export default function Questions() {
         setLoading(false)
     }
 
+    //dd: voor de getallen
+    function extractNumbers(value) {
+        return value.match(/\d+/g)?.map(Number) || [];
+    }
+
+    function normalize(value) {
+        return value
+            .toLowerCase()
+            .normalize("NFD")                 // accenten weg (hawaï → hawai)
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/[^a-z0-9\s]/g, " ")
+            .replace(/\s+/g, " ")
+            .trim();
+    }
+
+    //dd: voor bepaalde gevallen (ellen en elise)
+    function extractWords(value) {
+        return normalize(value)
+            .split(" ")
+            .filter(w => w !== "en");
+    }
+
+    function containsAnswer(userInput, correctAnswer) {
+        const user = normalize(userInput);
+        const correctParts = normalize(correctAnswer).split(" ");
+
+        return correctParts.every(part => user.includes(part));
+    }
+
     function checkAnswers() {
         let score = 0;
-        vragen.map((vraag) => {
-            if (vraag.answer.includes("*") && data[vraag.name] && data[vraag.name].trim() !== "") {
+
+        vragen.forEach((vraag, index) => {
+            console.log(index, score);
+            const userAnswer = data[vraag.name];
+            if (!userAnswer) return;
+
+            // vrije antwoorden
+            if (vraag.answer.includes("*") && userAnswer.trim() !== "") {
                 score += 1;
-            } else if (data[vraag.name] && vraag.answer.includes(data[vraag.name].replace('.', '').trim().toLowerCase())) {
-                score += 1;
-            } else if (data[vraag.name] && vraag.options && vraag.answer.includes(data[vraag.name])) {
-                score += 1;
+                return;
             }
-        })
-        return score
+
+            // 🔢 numberset
+            if (vraag.type === "numberset") {
+                const numbers = extractNumbers(userAnswer);
+                const expected = vraag.answer;
+
+                const correct = expected.every(n => numbers.includes(n));
+                if (correct) score += 1;
+                return;
+            }
+
+            // 🔤 wordset
+            if (vraag.type === "wordset") {
+                const words = extractWords(userAnswer);
+                const expected = vraag.answer;
+
+                const correct = expected.every(w => words.includes(w));
+                if (correct) score += 1;
+                return;
+            }
+
+            // select / options
+            if (vraag.options && vraag.answer.includes(userAnswer)) {
+                score += 1;
+                return;
+            }
+
+            // 🧠 ALLE ANDERE VRAGEN → contains
+            const correct = vraag.answer.some(ans =>
+                containsAnswer(userAnswer, ans)
+            );
+
+            if (correct) score += 1;
+        });
+
+        return score;
     }
+
 
     function chunkArray(array, chunkSize) {
         const chunks = []
@@ -219,15 +300,22 @@ export default function Questions() {
 
     return (
         <Grid container direction="column" spacing={10} alignItems={"center"}>
-            <Paper sx={{ width: { xs: '85vw', md: '50vw' }, padding: 4, mt: 10, borderRadius: 5, overflowY: 'auto', backgroundColor:  alpha('#FFFFFF', 0.95) }}>
+            <Paper sx={{
+                width: {xs: '85vw', md: '50vw'},
+                padding: 4,
+                mt: 10,
+                borderRadius: 5,
+                overflowY: 'auto',
+                backgroundColor: alpha('#FFFFFF', 0.95)
+            }}>
                 <FormControl variant="standard" fullWidth>
-                    <Typography variant="body2" sx={{ mb: 1 }} color="#606060">
+                    <Typography variant="body2" sx={{mb: 1}} color="#606060">
                         Volledige Naam
                     </Typography>
                     <Input id="component-simple"
-                        name="fullName"
-                        value={fullName}
-                        onChange={(e) => setFullName(e.target.value)}
+                           name="fullName"
+                           value={fullName}
+                           onChange={(e) => setFullName(e.target.value)}
                     />
                 </FormControl>
             </Paper>
@@ -236,7 +324,7 @@ export default function Questions() {
                     <Paper
                         key={groupIndex}
                         sx={{
-                            width: { xs: '85vw', md: '50vw' },
+                            width: {xs: '85vw', md: '50vw'},
                             p: 4,
                             mb: 20,
                             borderRadius: 5,
@@ -247,23 +335,26 @@ export default function Questions() {
                             {group.map((vraag, index) => {
                                 return (
                                     (vraag.options) ? (
-                                        <FormControl fullWidth key={index} sx={{ my: 2 }}>
-                                            <Typography variant="body2" sx={{ mb: 1 }} color="#606060">
-                                                {vraag.label}
-                                            </Typography>
-                                            <Select label={vraag.label} variant="standard" name={vraag.name} defaultValue={""} onChange={(e) => handleChange(e)} fullWidth key={index}>
-                                                {vraag.options.map((option, idx) => (
-                                                    <MenuItem key={idx} value={option}>{option}</MenuItem>
-                                                ))}
-                                            </Select>
-                                        </FormControl>
-                                    )
+                                            <FormControl fullWidth key={index} sx={{my: 2}}>
+                                                <Typography variant="body2" sx={{mb: 1}} color="#606060">
+                                                    {vraag.label}
+                                                </Typography>
+                                                <Select label={vraag.label} variant="standard" name={vraag.name}
+                                                        defaultValue={""} onChange={(e) => handleChange(e)} fullWidth
+                                                        key={index}>
+                                                    {vraag.options.map((option, idx) => (
+                                                        <MenuItem key={idx} value={option}>{option}</MenuItem>
+                                                    ))}
+                                                </Select>
+                                            </FormControl>
+                                        )
                                         :
                                         <FormControl fullWidth variant="standard" key={index}>
-                                            <Typography variant="body2" sx={{ mb: 1 }} color="#606060">
+                                            <Typography variant="body2" sx={{mb: 1}} color="#606060">
                                                 {vraag.label}
                                             </Typography>
-                                            <Input id="component-simple" name={vraag.name} value={data[vraag.name] || ""} onChange={(e) => handleChange(e)} />
+                                            <Input id="component-simple" name={vraag.name}
+                                                   value={data[vraag.name] || ""} onChange={(e) => handleChange(e)}/>
                                         </FormControl>
                                 )
                             })}
@@ -271,25 +362,31 @@ export default function Questions() {
                         {groupIndex === questionGroups.length - 1 && (
                             <Grid container direction={'column'}>
                                 <Grid display={showScore === true ? 'block' : 'none'}>
-                                    <Typography variant="h6" sx={{ textAlign: 'center', mt: 3 }}>
-                                        Jouw score is: <br />{totalScore} / {vragen.length}
+                                    <Typography variant="h6" sx={{textAlign: 'center', mt: 3}}>
+                                        Jouw score is: <br/>{totalScore} / {vragen.length}
                                     </Typography>
-                                    <Typography variant="body1" sx={{ textAlign: 'center', mt: 3 }}>
+                                    <Typography variant="body1" sx={{textAlign: 'center', mt: 3}}>
                                         {totalScore >= 15 ? (
                                             <>
-                                                Gefeliciteerd! Je hebt meer dan 75% behaald.<br />
-                                                De coördinaten van het feest zijn:<br />
-                                                <b>51°11'10.0"N 3°00'23.5"E</b>
+                                                Gefeliciteerd! Je hebt meer dan 75% behaald.<br/>
+                                                De coördinaten van het feest zijn:<br/>
+                                                <b>51°11&#39;10.0&#34;N 3°00&#39;23.5&#34;E</b>
                                             </>
                                         ) : <>
-                                            Helaas, je hebt niet genoeg punten behaald om de locatie te onthullen.<br />
+                                            Helaas, je hebt niet genoeg punten behaald om de locatie te onthullen.<br/>
                                             Kijk <b>2 maanden voor het feest</b> terug op deze pagina voor de locatie.
                                         </>
                                         }
                                     </Typography>
                                 </Grid>
                                 <Grid container justifyContent="center" mt={5}>
-                                    <Button variant="contained" onClick={() => handleSubmit()} loading={loading} color="primary" sx={{ textTransform: 'capitalize', borderRadius: 5, backgroundColor: '#e6ebe7', color: '#000000' }} disabled={subDisabled}>
+                                    <Button variant="contained" onClick={() => handleSubmit()} loading={loading}
+                                            color="primary" sx={{
+                                        textTransform: 'capitalize',
+                                        borderRadius: 5,
+                                        backgroundColor: '#e6ebe7',
+                                        color: '#000000'
+                                    }} disabled={subDisabled}>
                                         Bekijk mijn resultaat
                                     </Button>
                                 </Grid>
