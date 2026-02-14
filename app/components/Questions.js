@@ -57,7 +57,7 @@ const vragen = [
         label: "Waar ging het trouwfeest door?",
         type: "text",
         name: "weddingLocation",
-        answer: ["ten stuyver", "stuyver", "ten stuiver", "stuiver"]
+        answer: ["ten stuyver", "stuyver", "ten stuiver", "stuiver", "ter stuiver", "ter stuyver"]
     },
     {
         label: "Waar gingen wij op huwelijksreis?",
@@ -81,7 +81,7 @@ const vragen = [
         label: "Wat was het thema van ons 10 jaar getrouwd feest?",
         type: "text",
         name: "themeParty",
-        answer: ["trouwkleren", "hawai", "hawaï", "hawaii"]
+        answer: ["trouwkleren", "hawai", "hawaï", "hawaii", "trouw", "trouwkledij", "trouwkleding"]
     },
     {
         label: "Wanneer verjaart Steven?",
